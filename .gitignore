@@ -1,0 +1,5 @@
+DATA_N50_S10/*.csv
+DATA_N50_S10/*.seq
+DATA_N50_S1000/*.csv
+DATA_N50_S1000/*.seq
+*.pyc
