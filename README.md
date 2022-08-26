@@ -1,2 +1,2 @@
 # dmdgp-mlm
-Minimial Learning Machine (MLM) applied to the Discretizable Molecular Distance Geometry Problem
+Minimimal Learning Machine (MLM) applied to the Discretizable Molecular Distance Geometry Problem
