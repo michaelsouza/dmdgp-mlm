@@ -11,9 +11,10 @@ from numpy.random import choice
 from scipy.spatial.transform import Rotation as R
 from tqdm import tqdm
 
+
 def createX(nnodes):
     rij = 1.526             # covalent bond length (in angstrons)
-    tik = np.radians(109.5) # angle formed by two consecutive covalent bond
+    tik = np.radians(109.5)  # angle formed by two consecutive covalent bond
     # prefered angles
     W = [60, 180, 300]
     W = np.random.choice(W, size=nnodes, replace=True)
@@ -40,12 +41,12 @@ def createX(nnodes):
         v = b - c
         Rv = R.from_rotvec(v * (W[i] / np.linalg.norm(v)))
         u = np.cross(v, a - c)
-        Ru = R.from_rotvec(u * (tik / np.linalg.norm(u)))        
-        
+        Ru = R.from_rotvec(u * (tik / np.linalg.norm(u)))
+
         # translate to origin and apply the rotations Ru and Rv
         x = Ru.apply(b - c)
         x = Rv.apply(x)
-                
+
         # get final x
         X[i] = x + c
     return X
@@ -57,7 +58,7 @@ if __name__ == '__main__':
         print('Usage:\n> python createRandomInstance.py nsamples nnodes')
         raise Exception('Invalid arguments.')
     nsamples = int(sys.argv[1])
-    nnodes = int(sys.argv[2])    
+    nnodes = int(sys.argv[2])
     print('Creating %d instances with %d nodes' % (nsamples, nnodes))
     # create DATA folder
     wdir = 'DATA_N%d_S%d' % (nnodes, nsamples)
