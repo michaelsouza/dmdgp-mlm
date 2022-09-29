@@ -3,16 +3,16 @@
 #     geometry problem." Global optimization. Springer, Boston, MA, 2006. 405-414.
 #
 
+import itertools
 import os
 import sys
 import time
 import numpy as np
-from numpy.random import choice
-from scipy.spatial.transform import Rotation as R
 from tqdm import tqdm
+from scipy.spatial.transform import Rotation as R
 
 
-def createX(nnodes):
+def createX(nnodes: int) -> np.ndarray:
     rij = 1.526             # covalent bond length (in angstrons)
     tik = np.radians(109.5)  # angle formed by two consecutive covalent bond
     # prefered angles
@@ -52,14 +52,28 @@ def createX(nnodes):
     return X
 
 
+def createNMR(X: np.ndarray, dmax: float) -> np.ndarray:
+    A = []
+    for i, j in itertools.combinations(range(len(X)), 2):
+        xi, xj = X[i], X[j]
+        dij = np.linalg.norm(xi - xj)
+        if dij <= dmax:
+            A.append((i,j,dij))
+    return np.array(A)
+
+
 if __name__ == '__main__':
     np.random.seed(1)
     if len(sys.argv) < 3:
-        print('Usage:\n> python createRandomInstance.py nsamples nnodes')
+        print('Usage:\n> python createRandomInstance.py nsamples nnodes dmax')
         raise Exception('Invalid arguments.')
     nsamples = int(sys.argv[1])
     nnodes = int(sys.argv[2])
-    print('Creating %d instances with %d nodes' % (nsamples, nnodes))
+    dmax = int(sys.argv[3])
+    print('Creating instances')
+    print('   nsamples ... %d' % nsamples)
+    print('   nnodes ..... %d' % nnodes)
+    print('   dmax ....... %g' % dmax)
     # create DATA folder
     wdir = 'DATA_N%d_S%d' % (nnodes, nsamples)
     if not os.path.exists(wdir):
@@ -68,7 +82,10 @@ if __name__ == '__main__':
     tic = time.time()
     for i in tqdm(range(nsamples)):
         X = createX(nnodes)
+        A = createNMR(X, dmax)
         fcsv = os.path.join(wdir, 'pid_%04d.csv' % i)
         np.savetxt(fcsv, X=X, delimiter=',')
+        fnmr = fcsv.replace('.csv','.nmr')
+        np.savetxt(fnmr, X=A, fmt='%.16g', delimiter=',')
     toc = time.time() - tic
     print('Elapsed time %f secs' % toc)

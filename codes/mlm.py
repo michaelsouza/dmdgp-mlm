@@ -1,9 +1,10 @@
-import numpy as np
+import os
 import random
-from scipy.linalg import solve_triangular
+import numpy as np
 from typing import Callable
 from scipy.optimize import minimize
-
+from scipy.linalg import solve_triangular
+from sklearn.model_selection import train_test_split
 
 class MLM:
     def __init__(self) -> None:
@@ -15,9 +16,9 @@ class MLM:
         self.distY = None
         self.c = None
         self.g = None
-        self.dyEst = NOne
+        self.dyEst = None
 
-    def training(self, X: np.ndarray, Y: np.ndarray, k: int, distX: Callable[[np.ndarray, np.ndarray]], distY: Callable[[np.ndarray, np.ndarray]], idx: list = [], seed: int = 1) -> None:
+    def training(self, X: np.ndarray, Y: np.ndarray, k: int, distX: Callable[[np.ndarray, np.ndarray], float], distY: Callable[[np.ndarray, np.ndarray], float], idx: list = [], seed: int = 1) -> None:
         if len(X) != len(Y):
             raise Exception('X and Y must have the same length.')
 
@@ -80,3 +81,13 @@ class MLM:
                 self.g[j] += self.c[i] * (y[j] - self.Ry[i][j])
             self.g[j] *= 4.0
         return f, self.g
+
+if __name__ == "__main__":
+    wdir = 'DATA_N50_S10'
+    random.seed(1)
+    ds = sorted([fn for fn in os.listdir(wdir) if fn.endswith('.nmr')])
+    ds_train = sorted(random.sample(ds, int(0.8 * len(ds))))
+    ds_test = sorted(list(set(ds) - set(ds_train)))
+    print(ds_train)
+    print(ds_test)
+    

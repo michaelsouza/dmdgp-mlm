@@ -4,7 +4,7 @@
 from tkinter import SE
 import unittest
 
-from createRandomInstance import *
+from codes.createDataset import *
 
 
 class TestCreateRandomInstance(unittest.TestCase):
