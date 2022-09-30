@@ -4,7 +4,6 @@ import numpy as np
 from typing import Callable
 from scipy.optimize import minimize
 from scipy.linalg import solve_triangular
-from sklearn.model_selection import train_test_split
 
 class MLM:
     def __init__(self) -> None:
@@ -21,6 +20,8 @@ class MLM:
     def training(self, X: np.ndarray, Y: np.ndarray, k: int, distX: Callable[[np.ndarray, np.ndarray], float], distY: Callable[[np.ndarray, np.ndarray], float], idx: list = [], seed: int = 1) -> None:
         if len(X) != len(Y):
             raise Exception('X and Y must have the same length.')
+
+        # TODO RMSD dos y's de referência
 
         n = X.shape[0]
         if len(idx) == 0:
@@ -58,16 +59,17 @@ class MLM:
     def test(self, x:np.ndarray) -> np.ndarray:
         dx = np.zeros((self.k,), dtype=float)
         for i in range(self.k):
-            dx[i] = self.distX(x, self.Rx[x])
+            dx[i] = self.distX(x, self.Rx[i])
         self.dyEst = (dx @ self.B)**2
-        y = np.mean(self.Ry)
+        y = np.mean(self.Ry) # initial value
         self.c = y.copy()
         self.g = y.copy()
         J = lambda y: self.Jfun(y)
-        res = minimize(J, y, jac=bool)
-        if not res.success:
+        r = minimize(J, y, jac=bool)
+        if not r.success:
             raise Exception('The minimize method has failed.')
-        return res.x
+        y = r.x
+        return y
 
     def Jfun(self, y: np.ndarray):        
         f = 0.0

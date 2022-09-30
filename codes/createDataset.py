@@ -61,6 +61,21 @@ def createNMR(X: np.ndarray, dmax: float) -> np.ndarray:
             A.append((i,j,dij))
     return np.array(A)
 
+def createBinarySequence(X):
+    nnodes = X.shape[0]
+    s = np.zeros(nnodes, dtype=bool)
+    for i in range(3, nnodes):
+        a = X[i-3]
+        b = X[i-2]
+        c = X[i-1]
+        d = X[i]
+        u = a - c
+        v = b - c
+        w = np.cross(u, v)
+        p = d - c
+        s[i] = np.dot(w, p) > 0
+    return s
+
 
 if __name__ == '__main__':
     np.random.seed(1)
@@ -83,9 +98,13 @@ if __name__ == '__main__':
     for i in tqdm(range(nsamples)):
         X = createX(nnodes)
         A = createNMR(X, dmax)
+        s = createBinarySequence(X)
         fcsv = os.path.join(wdir, 'pid_%04d.csv' % i)
         np.savetxt(fcsv, X=X, delimiter=',')
         fnmr = fcsv.replace('.csv','.nmr')
         np.savetxt(fnmr, X=A, fmt='%.16g', delimiter=',')
+        fseq = fcsv.replace('.csv', '.seq')
+        np.savetxt(fseq, s, delimiter=',', fmt='%d')
+
     toc = time.time() - tic
     print('Elapsed time %f secs' % toc)
