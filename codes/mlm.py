@@ -83,6 +83,7 @@ class MLM:
                 self.g[j] += self.c[i] * (y[j] - self.Ry[i][j])
             self.g[j] *= 4.0
         return f, self.g
+        
 
 if __name__ == "__main__":
     wdir = 'DATA_N50_S10'

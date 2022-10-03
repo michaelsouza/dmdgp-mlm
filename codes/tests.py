@@ -1,34 +1,53 @@
 # References:
 # 1. https://docs.python.org/3/library/unittest.html
 
-from tkinter import SE
+import os
 import unittest
+import numpy as np
+from dmdgp_ML import *
+from scipy.optimize import check_grad, approx_fprime
 
-from codes.createDataset import *
+def check_grad2(f, g, x):    
+    fold = f(x)
+    gold = g(x)
+    xnew = x.copy()
+    gnew = gold.copy()
+    h = 1E-8
+    for i in range(len(x)):
+        xnew[i] = x[i] + h        
+        gnew[i] = (f(xnew) - fold) / h
+        xnew[i] = x[i]
+    err = np.max(np.abs(gnew - gold))
+    return err
 
+class TestAll(unittest.TestCase):
+    def test_F(self):
+        wdir = '/home/michael/gitrepos/dmdgp-mlm/DATA_N50_S10/'
+        for fn in os.listdir(wdir):            
+            if not fn.endswith('.nmr'):
+                continue
+            fn = os.path.join(wdir, fn)            
+            D = read_nmr(fn)
+            x = read_csv(fn.replace('.nmr','.csv'))
+            y = F(D, x)
+            self.assertAlmostEqual(y, 0)
+    
+    def test_G(self):
+        np.random.seed(1)        
+        wdir = '/home/michael/gitrepos/dmdgp-mlm/DATA_N50_S10/'
+        x = read_csv(os.path.join(wdir, 'pid_0000.csv'))
+        x = x.reshape(-1) # flattening
+        FILES = [fn for fn in os.listdir(wdir) if fn.endswith('.nmr')]
+        for k, fn in enumerate(FILES):
+            fn = os.path.join(wdir, fn)
+            D = read_nmr(fn)                        
+            f = lambda x: F(D, x)
+            g = lambda x: G(D, x)
+            gx_num = approx_fprime(x, f)
+            gx = g(x)                        
+            r = np.linalg.norm(gx_num - gx) / np.max((1, np.linalg.norm(gx_num)))            
+            self.assertAlmostEqual(r, 0, 3)
 
-class TestCreateRandomInstance(unittest.TestCase):
-    def test_createX(self):
-        np.random.seed(1)
-        nnodes = 10
-        X = createX(nnodes)
-        u = X[0] - X[1]
-        v = X[2] - X[1]
-        uv = np.dot(u, v)
-        norm_u = np.linalg.norm(u)
-        norm_v = np.linalg.norm(v)
-        cik_ref = uv/(norm_u * norm_v)
-        rij_ref = np.linalg.norm(u)
-        for i in range(2, len(X)):
-            rij = np.linalg.norm(X[i] - X[i-1])
-            self.assertAlmostEqual(rij_ref, rij)
-
-            u = X[i-2] - X[i-1]
-            v = X[i] - X[i-1]
-            norm_u = np.linalg.norm(u)
-            norm_v = np.linalg.norm(v)
-            cik = uv/(norm_u * norm_v)
-            self.assertAlmostEqual(cik_ref, cik)
 
 
 if __name__ == '__main__':
