@@ -100,7 +100,7 @@ if __name__ == '__main__':
         A = createNMR(X, dmax)
         s = createBinarySequence(X)
         fcsv = os.path.join(wdir, 'pid_%04d.csv' % i)
-        np.savetxt(fcsv, X=X, delimiter=',')
+        np.savetxt(fcsv, X=X, fmt='%.16g', delimiter=',')
         fnmr = fcsv.replace('.csv','.nmr')
         np.savetxt(fnmr, X=A, fmt='%.16g', delimiter=',')
         fseq = fcsv.replace('.csv', '.seq')
