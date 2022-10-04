@@ -80,17 +80,26 @@ def createBinarySequence(X):
 if __name__ == '__main__':
     np.random.seed(1)
     if len(sys.argv) < 3:
-        print('Usage:\n> python createRandomInstance.py nsamples nnodes dmax')
+        print('Usage:\n> python create_dataset.py dmax nsamples nnodes')
         raise Exception('Invalid arguments.')
-    nsamples = int(sys.argv[1])
-    nnodes = int(sys.argv[2])
-    dmax = int(sys.argv[3])
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg == '-nsamples':
+            nsamples = int(int(sys.argv[i+1]))
+        elif arg == '-nnodes':
+            nnodes = int(int(sys.argv[i+1]))
+        elif arg == '-dmax':
+            dmax = int(int(sys.argv[i+1]))
+        else:
+            raise Exception('Unkown argument (arg=%s)' % (str(arg)))
+        i += 2
     print('Creating instances')
     print('   nsamples ... %d' % nsamples)
     print('   nnodes ..... %d' % nnodes)
     print('   dmax ....... %g' % dmax)
     # create DATA folder
-    wdir = 'DATA_N%d_S%d' % (nnodes, nsamples)
+    wdir = 'DATA_D%g_N%d_S%d' % (dmax, nnodes, nsamples)
     if not os.path.exists(wdir):
         os.mkdir(wdir)
     # create instances
