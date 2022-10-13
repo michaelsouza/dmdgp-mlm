@@ -3,10 +3,10 @@
 #     geometry problem." Global optimization. Springer, Boston, MA, 2006. 405-414.
 #
 
-import itertools
 import os
 import sys
 import time
+import itertools
 import numpy as np
 from tqdm import tqdm
 from scipy.spatial.transform import Rotation as R
@@ -79,9 +79,6 @@ def createBinarySequence(X):
 
 if __name__ == '__main__':
     np.random.seed(1)
-    if len(sys.argv) < 3:
-        print('Usage:\n> python create_dataset.py dmax nsamples nnodes')
-        raise Exception('Invalid arguments.')
     i = 1
     while i < len(sys.argv):
         arg = sys.argv[i]
