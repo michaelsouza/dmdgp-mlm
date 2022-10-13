@@ -57,7 +57,7 @@ def createNMR(X: np.ndarray, dmax: float) -> np.ndarray:
     for i, j in itertools.combinations(range(len(X)), 2):
         xi, xj = X[i], X[j]
         dij = np.linalg.norm(xi - xj)
-        if dij <= dmax:
+        if dij <= dmax or np.abs(i - j) <= 3:
             A.append((i,j,dij))
     return np.array(A)
 
