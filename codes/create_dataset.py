@@ -58,8 +58,9 @@ def createNMR(X: np.ndarray, dmax: float) -> np.ndarray:
         xi, xj = X[i], X[j]
         dij = np.linalg.norm(xi - xj)
         if dij <= dmax or np.abs(i - j) <= 3:
-            A.append((i,j,dij))
+            A.append((i, j, dij))
     return np.array(A)
+
 
 def createBinarySequence(X):
     nnodes = X.shape[0]
@@ -107,7 +108,7 @@ if __name__ == '__main__':
         s = createBinarySequence(X)
         fcsv = os.path.join(wdir, 'pid_%04d.csv' % i)
         np.savetxt(fcsv, X=X, fmt='%.16g', delimiter=',')
-        fnmr = fcsv.replace('.csv','.nmr')
+        fnmr = fcsv.replace('.csv', '.nmr')
         np.savetxt(fnmr, X=A, fmt='%.16g', delimiter=',')
         fseq = fcsv.replace('.csv', '.seq')
         np.savetxt(fseq, s, delimiter=',', fmt='%d')

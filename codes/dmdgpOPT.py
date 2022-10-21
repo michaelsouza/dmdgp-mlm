@@ -85,7 +85,7 @@ def calcDeviation(x: np.ndarray, D: dict):
 
 if __name__ == "__main__":
     fn = 'DATA_D6_N50_S10/pid_0000.nmr'
-    numSamples = 5
+    numSamples = 10
 
     print('fn: %s' % fn)
     numNodes, numEdges, D = read_nmr(fn)
@@ -98,6 +98,7 @@ if __name__ == "__main__":
         print('sample: %d' % sample)
         x = initX(numNodes, D)
         print('F(x0): %g' % F(x, D))
+        # res = minimize(F, x, args=(D), options=options)
         # res = minimize(F, x, jac=G, args=(D), options=options)
         res = minimize(FG, x, jac=True, args=(D), options=options)
         x = res.x.reshape((numNodes, -1))
