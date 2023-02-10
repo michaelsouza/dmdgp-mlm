@@ -1,5 +1,5 @@
 # dmdgp-mlm
-Minimimal Learning Machine (MLM) applied to the Discretizable Molecular Distance Geometry Problem
+Minimal Learning Machine (MLM) applied to the Discretizable Molecular Distance Geometry Problem
 
 ## Gradient of the MLM training objective function 
 From Eq. (7) of [1], we have
